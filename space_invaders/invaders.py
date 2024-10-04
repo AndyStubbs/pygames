@@ -127,7 +127,6 @@ class Bullets( pygame.sprite.Sprite ):
 		if self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT or is_hit:
 			self.kill()
 
-
 # Create Aliens
 class Aliens( pygame.sprite.Sprite ):
 	def __init__( self, x, y ):
@@ -165,20 +164,6 @@ class Aliens( pygame.sprite.Sprite ):
 		if random.randint( 1, 2000 ) < level * 2:
 			bullet = Bullets( self.rect.centerx, self.rect.bottom, 5, spaceship_group )
 			bullet_group.add( bullet )
-		
-		# Check if Alien Reach Bottom
-		if self.rect.bottom > SCREEN_HEIGHT:
-			for item in spaceship_group:
-				item.health_remaining = 0
-			
-			# Create Explosion on spaceship
-			explosion = Explosion(
-				spaceship_group.sprites()[0].rect.centerx,
-				spaceship_group.sprites()[0].rect.centery
-			)
-			explosion_group.add( explosion )
-
-
 
 
 # Create Explosion
@@ -284,6 +269,15 @@ while run:
 		for alien in alien_group:
 			alien.move_direction *= -1
 			alien.rect.y += 50
+			if alien.rect.bottom > SCREEN_HEIGHT:
+				for item in spaceship_group:
+					item.health_remaining = 0
+					explosion = Explosion(
+						item.rect.centerx,
+						item.rect.centery
+					)
+					explosion_group.add( explosion )
+					item.kill()
 
 	# Draw Sprite Groups
 	spaceship_group.draw( screen )
